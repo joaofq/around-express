@@ -10,11 +10,11 @@ app.get("/", (req, res) => {
   res.status(404).send("O front-end ainda não está conectado...");
 });
 
-// app.get("*", (req, res) => {
-//   res.status(404).send({ message: "A solicitação não foi encontrada" });
-// });
-
 app.use("/", users, cards);
+
+app.get("*", (req, res) => {
+  res.status(404).send({ message: "A solicitação não foi encontrada" });
+});
 
 app.listen(PORT, () => {
   console.log(`App rodando na porta ${PORT}.`);

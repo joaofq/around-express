@@ -3,7 +3,10 @@ const User = require('../models/user');
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'Error' }));
+    .catch(() => {
+      const ERROR_CODE = 500;
+      res.status(ERROR_CODE).send({ message: 'Erro' });
+    });
 };
 
 module.exports.getUserById = (req, res) => {
@@ -16,9 +19,11 @@ module.exports.getUserById = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Não encontrado' });
+        const ERROR_CODE = 404;
+        res.status(ERROR_CODE).send({ message: 'Usuário não encontrado' });
       } else {
-        res.status(500).send({ message: 'Erro' });
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
       }
     });
 };
@@ -28,7 +33,13 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      res.send({ message: 'Erro: ' + err });
+      if (err.name === 'ValidationError') {
+        const ERROR_CODE = 400;
+        res.status(ERROR_CODE).send({ message: 'Dados inválidos' });
+      } else {
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
+      }
     });
 };
 
@@ -42,11 +53,13 @@ module.exports.updateUser = (req, res) => {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 400) {
-        res.status(400).send({
+        const ERROR_CODE = 400;
+        res.status(ERROR_CODE).send({
           message: 'Dados inválidos',
         });
       } else {
-        res.status(500).send({ message: 'Erro' });
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
       }
     });
 };
@@ -61,11 +74,13 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 400) {
-        res.status(400).send({
+        const ERROR_CODE = 400;
+        res.status(ERROR_CODE).send({
           message: 'Dados inválidos',
         });
       } else {
-        res.status(500).send({ message: 'Erro' });
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
       }
     });
 };

@@ -30,13 +30,58 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-    if( err.statusCode === 404) {
-    const ERROR_CODE = 404;
-  res.status(ERROR_CODE).send({"Informação não encontrada"})
-} else {
-  const ERROR_CODE = 500;
-  res.status(ERROR_CODE).send({message: "Erro"})
-}});
+      if (err.statusCode === 404) {
+        const ERROR_CODE = 404;
+        res.status(ERROR_CODE).send({ message: 'Cartão não encontrado' });
+      } else {
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
+      }
+    });
 };
 
-// IMPLEMENTAR ERROS.
+module.exports.likeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail(() => {
+      const error = new Error('Cartão não encontrado');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then((card) => res.send({ data: card }))
+    .catch((err) => {
+      if (err.statusCode === 404) {
+        const ERROR_CODE = 404;
+        res.status(ERROR_CODE).send({ message: 'Cartão não encontrado' });
+      } else {
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
+      }
+    });
+};
+
+module.exports.dislikeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail(() => {
+      const error = new Error('Cartão não encontrado');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then((card) => res.send({ data: card }))
+    .catch((err) => {
+      if (err.statusCode === 404) {
+        const ERROR_CODE = 404;
+        res.status(ERROR_CODE).send({ message: 'Cartão não encontrado' });
+      } else {
+        const ERROR_CODE = 500;
+        res.status(ERROR_CODE).send({ message: 'Erro' });
+      }
+    });
+};

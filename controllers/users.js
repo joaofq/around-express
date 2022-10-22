@@ -10,7 +10,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  return User.findById({ _id: req.params._id })
+  User.findById(req.params.userId)
     .orFail(() => {
       const error = new Error('Id não encontrado');
       error.statusCode = 404;
@@ -43,16 +43,17 @@ module.exports.createUser = (req, res) => {
     });
 };
 
+//Como faço a testagem do updateUser e updateAvater no Postman
+// Não to conseguindo passar o req.user_id pelo postman.????
+
 module.exports.updateUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, about, avatar },
-    { new: true, runValidators: true }
-  )
-    .then((user) => res.send({ user }))
+  User.findByIdAndUpdate(req.user._id, {
+    name: req.body.name,
+    about: req.body.about,
+  })
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 400) {
+      if (err.name === 'validationError') {
         const ERROR_CODE = 400;
         res.status(ERROR_CODE).send({
           message: 'Dados inválidos',
@@ -65,12 +66,7 @@ module.exports.updateUser = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { avatar },
-    { new: true, runValidators: true }
-  )
+  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar })
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 400) {

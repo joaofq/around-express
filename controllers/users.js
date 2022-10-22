@@ -43,9 +43,6 @@ module.exports.createUser = (req, res) => {
     });
 };
 
-//Como faço a testagem do updateUser e updateAvater no Postman
-// Não to conseguindo passar o req.user_id pelo postman.????
-
 module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(req.user._id, {
     name: req.body.name,

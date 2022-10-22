@@ -16,15 +16,15 @@ app.get('/', (req, res) => {
   res.status(404).send('O front-end ainda não está conectado..');
 });
 
-app.use('/', users, cards);
-
 app.use((req, res, next) => {
   req.user = {
-    _id: '63531bdd2a2079149cbd2f0c', // cole o _id do usuário teste criado no passo anterior
+    _id: '63531bdd2a2079149cbd2f0c',
   };
 
   next();
 });
+
+app.use('/', users, cards);
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'A solicitação não foi encontrada' });

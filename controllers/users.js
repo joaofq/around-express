@@ -44,10 +44,14 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.updateUser = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, {
-    name: req.body.name,
-    about: req.body.about,
-  })
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      about: req.body.about,
+    },
+    { new: true }
+  )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'validationError') {
@@ -63,10 +67,14 @@ module.exports.updateUser = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: req.body.avatar },
+    { new: true }
+  )
     .then((user) => res.send({ user }))
     .catch((err) => {
-      if (err.name === 400) {
+      if (err.name === 'validationError') {
         const ERROR_CODE = 400;
         res.status(ERROR_CODE).send({
           message: 'Dados inválidos',

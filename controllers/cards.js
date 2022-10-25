@@ -5,7 +5,9 @@ module.exports.getCards = (req, res) => {
     .then((cards) => res.send({ data: cards }))
     .catch(() => {
       const ERROR_CODE = 500;
-      res.status(ERROR_CODE).send({ message: 'Erro' });
+      res
+        .status(ERROR_CODE)
+        .send({ message: 'Erro ao recuperar cards do banco de dados.' });
     });
 };
 
@@ -18,10 +20,12 @@ module.exports.createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const ERROR_CODE = 400;
-        res.status(ERROR_CODE).send({ message: 'Dados inválidos' });
+        res.status(ERROR_CODE).send({ message: 'Dados inválidos.' });
       } else {
         const ERROR_CODE = 500;
-        res.status(ERROR_CODE).send({ message: 'Erro' });
+        res
+          .status(ERROR_CODE)
+          .send({ message: 'Erro ao tentar criar novo card.' });
       }
     });
 };
@@ -32,10 +36,10 @@ module.exports.deleteCard = (req, res) => {
     .catch((err) => {
       if (err.statusCode === 404) {
         const ERROR_CODE = 404;
-        res.status(ERROR_CODE).send({ message: 'Cartão não encontrado' });
+        res.status(ERROR_CODE).send({ message: 'Card não encontrado.' });
       } else {
         const ERROR_CODE = 500;
-        res.status(ERROR_CODE).send({ message: 'Erro' });
+        res.status(ERROR_CODE).send({ message: 'Erro ao deletar card.' });
       }
     });
 };
@@ -44,10 +48,10 @@ module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .orFail(() => {
-      const error = new Error('Cartão não encontrado');
+      const error = new Error('Cartão não encontrado.');
       error.statusCode = 404;
       throw error;
     })
@@ -55,10 +59,10 @@ module.exports.likeCard = (req, res) => {
     .catch((err) => {
       if (err.statusCode === 404) {
         const ERROR_CODE = 404;
-        res.status(ERROR_CODE).send({ message: 'Cartão não encontrado' });
+        res.status(ERROR_CODE).send({ message: 'Card não encontrado.' });
       } else {
         const ERROR_CODE = 500;
-        res.status(ERROR_CODE).send({ message: 'Erro' });
+        res.status(ERROR_CODE).send({ message: 'Erro ao curtir card.' });
       }
     });
 };
@@ -67,10 +71,10 @@ module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .orFail(() => {
-      const error = new Error('Cartão não encontrado');
+      const error = new Error('Card não encontrado');
       error.statusCode = 404;
       throw error;
     })
@@ -78,10 +82,10 @@ module.exports.dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.statusCode === 404) {
         const ERROR_CODE = 404;
-        res.status(ERROR_CODE).send({ message: 'Cartão não encontrado' });
+        res.status(ERROR_CODE).send({ message: 'Card não encontrado' });
       } else {
         const ERROR_CODE = 500;
-        res.status(ERROR_CODE).send({ message: 'Erro' });
+        res.status(ERROR_CODE).send({ message: 'Erro ao descurtir card.' });
       }
     });
 };

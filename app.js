@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
-  res.status(404).send('O front-end ainda não está conectado..');
+  res.status(404).send('O front-end ainda não está conectado"Logo logo...');
 });
 
 app.use((req, res, next) => {
